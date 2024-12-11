@@ -43,12 +43,22 @@ for i = 1:length(currentData)
     end
 end
 
+%% Process stock levels for adjusted order frequency
 updatedOrderReport2 = forecast2;
+updatedStockReport2 = zeros(length(historicalData), 1); % Tracks stock levels
+updatedStockReport2(1) = initialNumOfProducts;         % Set the initial stock level
+
 for i = 1:length(currentData)
     dataPoint = currentData(i);
     updatedOrderReport2 = dynamicForecast(historicalData, dataPoint, updatedOrderReport2, ...
                                          initialNumOfProducts, orderSize, minOrderSize, ...
                                          maxError, maxProductsHeld, false, i);
+    if i < 12
+        % Update stock level for the next period
+        updatedStockReport2(i + 1) = updatedStockReport2(i) + updatedOrderReport2(i) - currentData(i);
+        % Prevent negative stock levels by enforcing a minimum of zero
+        updatedStockReport2(i + 1) = max(updatedStockReport2(i + 1), 0);
+    end
 end
 
 %% Plot previous and updated order reports (adjusted batch size and order frequency)
@@ -108,17 +118,6 @@ title('Met Demand Analysis (Adjust Batch Size)');
 xlabel('Order Period');
 ylabel('Stock - Demand Difference');
 grid on;
-
-%% Process stock levels for adjusted order frequency
-updatedStockReport2 = zeros(length(historicalData), 1); % Tracks stock levels
-updatedStockReport2(1) = initialNumOfProducts;         % Set the initial stock level
-
-for i = 1:length(historicalData) - 1
-    % Update stock level for the next period
-    updatedStockReport2(i + 1) = updatedStockReport2(i) + updatedOrderReport2(i) - historicalData(i);
-    % Prevent negative stock levels by enforcing a minimum of zero
-    updatedStockReport2(i + 1) = max(updatedStockReport2(i + 1), 0);
-end
 
 %% Plot stock reports for adjusted order frequency
 figure;
