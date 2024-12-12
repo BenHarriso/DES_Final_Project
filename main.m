@@ -84,11 +84,11 @@ grid on;
 
 %% Plot historical and current orders for comparison
 figure;
-plot(1:length(historicalData), historicalData, 'c-s', 'DisplayName', 'Historical Orders');
+plot(1:length(historicalData), historicalData, 'c-s', 'DisplayName', 'Historical Data');
 hold on;
-plot(1:length(currentData), currentData, 'm-s', 'DisplayName', 'Current Orders');
+plot(1:length(currentData), currentData, 'm-s', 'DisplayName', 'Current Data');
 legend;
-title('Historical and Current Orders');
+title('Historical and Current Data');
 xlabel('Order Period');
 ylabel('Quantity of Products Ordered');
 grid on;
